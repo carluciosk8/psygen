@@ -1,21 +1,23 @@
 #include "Engine/AndroidTimeSource.hpp"
 
-
 namespace psy {
 
 
-AndroidTimeSource::AndroidTimeSource()
+timespec AndroidClock::m_start_time;
+
+
+AndroidClock::AndroidClock()
 {
     int err = clock_gettime(CLOCK_MONOTONIC, &m_start_time);
+    time_fptr = android_get_time;
 }
 
 
-AndroidTimeSource::~AndroidTimeSource()
-{
-}
+AndroidClock::~AndroidClock()
+{}
 
 
-double AndroidTimeSource::get_time() const
+double AndroidClock::android_get_time()
 {
     timespec now;
     int err = clock_gettime(CLOCK_MONOTONIC, &now);

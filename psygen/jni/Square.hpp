@@ -5,6 +5,15 @@
 class Square : public psy::Geometry
 {
 public:
-    virtual ~Square();
     Square();
+    virtual ~Square();
+
+    virtual void inflate();
+    virtual void shrink();
+    virtual int  estimate_memory();
+    virtual int  estimate_time();
+    virtual void update(float dt);
+
+    virtual void draw();
+    virtual void estimate_bound();
 };

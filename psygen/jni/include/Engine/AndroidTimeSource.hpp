@@ -1,23 +1,23 @@
 #pragma once
 
-#include "Engine/TimeSource.hpp"
+#include "Engine/Clock.hpp"
 
 #include <time.h>
 
 namespace psy {
 
 
-class AndroidTimeSource : public TimeSource
+class AndroidClock : public Clock
 {
 public:
-    AndroidTimeSource();
-    virtual ~AndroidTimeSource();
-
-    virtual double get_time() const;
+    AndroidClock();
+    virtual ~AndroidClock();
 
 
-private:
-    timespec m_start_time;
+protected:
+    static timespec m_start_time;
+
+    static double android_get_time();
 };
 
 

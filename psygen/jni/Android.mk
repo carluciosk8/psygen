@@ -7,6 +7,7 @@ LOCAL_MODULE           := psygen
 LOCAL_C_INCLUDES       := $(LOCAL_PATH)/include
 
 LOCAL_SRC_FILES        := psygen_main.cpp \
+						  Square.cpp \
 						  src/Engine/AndroidApplication.cpp \
 						  src/Engine/AndroidDisplay.cpp \
 						  src/Engine/AndroidLogger.cpp \

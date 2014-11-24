@@ -1,21 +1,26 @@
 #pragma once
 
-#include "Engine/Clock.hpp"
+#include "Engine/FrameCode.hpp"
+
+#include <android_native_app_glue.h>
 
 namespace psy {
 
-
-class Application
+class AndroidEventProcessor : public FrameCode
 {
 public:
-    virtual ~Application() {}
+    AndroidEventProcessor(struct android_app* android_application);
+    virtual ~AndroidEventProcessor();
 
-    virtual void run();
+    virtual void init();
+    virtual void execute();
+    virtual void shutdown();
 
 
-protected:
-    bool  m_is_running;
-    ClockManager m_clock;
+private:
+    struct android_app* m_android_app;
+
+    static int32_t engine_handle_input(struct android_app* app, AInputEvent* event);
 };
 
 

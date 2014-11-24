@@ -5,40 +5,42 @@
 namespace psy {
 
 
-AndroidApplication::AndroidApplication(struct android_app* android_application)
+
+AndroidPlatform::AndroidPlatform(struct android_app* android_application)
 :
     m_android_app(android_application)
 {
     app_dummy();
     m_android_app->userData = this;
+    android_application->onAppCmd = engine_handle_cmd;
 }
 
 
-AndroidApplication::~AndroidApplication()
-{
-    // nop
-}
+AndroidPlatform::~AndroidPlatform()
+{}
 
 
-void AndroidApplication::run()
+void AndroidPlatform::init()
+{}
+
+
+void AndroidPlatform::shutdown()
+{}
+
+
+void AndroidPlatform::engine_handle_cmd(struct android_app* app, int32_t cmd)
 {
-    // loop waiting for stuff to do.
-    for (;;)
+    switch (cmd)
     {
-        // Read all pending events.
-        int ident;
-        int events;
-        struct android_poll_source* poll_source;
-        while ( (ident = ALooper_pollAll(0, NULL, &events, reinterpret_cast<void**>(&poll_source))) >= 0)
-        {
-            // Process this event.
-            if (poll_source) poll_source->process(m_android_app, poll_source);
+    case APP_CMD_INIT_WINDOW:
+        // The window is being shown, get it ready.
+        //m_is_running = true;
+        break;
 
-            // Check if we are exiting.
-            if (m_android_app->destroyRequested) return;
-        }
+    case APP_CMD_TERM_WINDOW:
+        // The window is being hidden or closed, clean it up.
+        //m_is_running = false;
+        break;
     }
 }
-
-
 } // end namespace psy
