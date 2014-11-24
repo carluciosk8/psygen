@@ -39,30 +39,32 @@ namespace psy  /////////////////////////////////////////////////////////////////
 {
 
 class TimeSource;
-class IObserver;
+class Observer;
 
-class Clock
+class ClockManager
 {
 public:
-    Clock(const TimeSource* pSource = NULL);
-    ~Clock();
+    ClockManager(const TimeSource* pSource = NULL);
+    ~ClockManager();
 
     void init();
     void shutdown();
 
-    void SetTimeSource(const TimeSource * pSource);
-    void FrameStep();
+    void   SetTimeSource(const TimeSource * pSource);
+    void   step();
+    double get_time() const;// { return m_pTimeSource->getTime(); }
 
-    double GetAbsoluteTime() const;// { return m_pTimeSource->getTime(); }
-    inline double GetTime() const { return m_currentTime; }
-    inline double GetFrameDuration() const { return m_frameTime; }
-    inline int GetFrameNumber() const { return m_frameNumber; }
-    float GetFrameRate() const { return 1.0f/(float)m_frameTime; }
+    inline double get_current_time() const { return m_current_time; }
+    inline double get_frame_time()   const { return m_frame_time; }
+    inline int    get_frame_number() const { return m_frame_number; }
+    inline float  get_frame_rate()   const { return 1.0f/(float)m_frame_time; }
 
-    void AddObserver(IObserver * pObserver);
-    void RemoveObserver(IObserver * pObserver);
+    void AddObserver(Observer * pObserver);
+    void RemoveObserver(Observer * pObserver);
 
     void SetFiltering(int frameWindow, double frameDefault = 0.030);
+
+
 
 private:
     double GetExactLastFrameDuration();
@@ -70,10 +72,10 @@ private:
     double GetPredictedFrameDuration() const;
 
 
-    const TimeSource * m_pTimeSource;
-    double m_currentTime;
-    double m_frameTime;
-    int m_frameNumber;
+    const TimeSource* m_pTimeSource;
+    double m_current_time;
+    double m_frame_time;
+    int    m_frame_number;
 
     double m_sourceStartValue;
     double m_sourceLastValue;
@@ -82,7 +84,7 @@ private:
     double m_frameDefaultTime;
     std::deque<double> m_frameDurationHistory;
 
-    typedef std::vector<IObserver *> ObserverList;
+    typedef std::vector<Observer *> ObserverList;
     ObserverList m_observers;
 };
 

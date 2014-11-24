@@ -1,11 +1,15 @@
-/*
- * Application.cpp
- *
- *  Created on: 23/11/2014
- *      Author: carlucio
- */
+#include "Engine/Application.hpp"
+
+namespace psy {
 
 
+void Application::run()
+{
+    while (m_is_running)
+    {
+        m_clock.FrameStep();
+    }
+}
 
 
-//
+}

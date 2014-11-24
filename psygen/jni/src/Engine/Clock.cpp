@@ -7,30 +7,30 @@
 namespace psy {////////////////////////////////////////////////////////////////////////////////////
 
 
-Clock::Clock(const TimeSource * pSource)
+ClockManager::ClockManager(const TimeSource * pSource)
 :
     m_pTimeSource(NULL),
-    m_currentTime(0),
-    m_frameTime(0),
-    m_frameNumber(0),
+    m_current_time(0),
+    m_frame_time(0),
+    m_frame_number(0),
     m_sourceStartValue(0),
     m_sourceLastValue(0)
 {
     SetTimeSource(pSource);
     SetFiltering(1);
-    m_frameTime = GetPredictedFrameDuration();
+    m_frame_time = GetPredictedFrameDuration();
 }
 
 
 
-Clock::~Clock()
+ClockManager::~ClockManager()
 {
     this->shutdown();
 }
 
 
 
-void Clock::SetTimeSource(const TimeSource * pSource)
+void ClockManager::SetTimeSource(const TimeSource * pSource)
 {
     delete m_pTimeSource;
     m_pTimeSource = pSource;
@@ -42,12 +42,12 @@ void Clock::SetTimeSource(const TimeSource * pSource)
 }
 
 
-void Clock::init()
+void ClockManager::init()
 {
 }
 
 
-void Clock::shutdown()
+void ClockManager::shutdown()
 {
     if (m_pTimeSource)
         delete m_pTimeSource;
@@ -55,29 +55,33 @@ void Clock::shutdown()
 }
 
 
-double Clock::GetAbsoluteTime() const
+double ClockManager::get_time() const
 {
 	return m_pTimeSource->get_time();
 }
 
-void Clock::FrameStep()
+void ClockManager::step()
 {
     double exactLastFrameDuration = GetExactLastFrameDuration();
     AddToFrameHistory(exactLastFrameDuration);
 
-    m_frameTime = GetPredictedFrameDuration();
-    m_currentTime += m_frameTime;
+    m_frame_time = GetPredictedFrameDuration();
+    m_current_time += m_frame_time;
 
-    m_frameNumber++;
+    m_frame_number++;
 
-    ObserverList::iterator it;
-    for (it = m_observers.begin(); it != m_observers.end(); ++it)
-        (*it)->notify();
+    //ObserverList::iterator it;
+    //for (it = m_observers.begin(); it != m_observers.end(); ++it)
+    //    (*it)->notify();
+    for (Observer* observer : m_observers)
+    {
+        observer->notify();
+    }
 }
 
 
 
-double Clock::GetExactLastFrameDuration()
+double ClockManager::GetExactLastFrameDuration()
 {
     double sourceTime;
     if (m_pTimeSource == NULL)
@@ -94,7 +98,7 @@ double Clock::GetExactLastFrameDuration()
 
 
 
-void Clock::AddToFrameHistory(double exactFrameDuration)
+void ClockManager::AddToFrameHistory(double exactFrameDuration)
 {
     m_frameDurationHistory.push_back (exactFrameDuration);
     if (m_frameDurationHistory.size () > (unsigned int) m_frameFilteringWindow)
@@ -103,36 +107,31 @@ void Clock::AddToFrameHistory(double exactFrameDuration)
 
 
 
-double Clock::GetPredictedFrameDuration() const
+double ClockManager::GetPredictedFrameDuration() const
 {
-    double totalFrameTime = 0;
-
-    std::deque<double>::const_iterator it;
-    for (it = m_frameDurationHistory.begin(); it != m_frameDurationHistory.end(); ++it)
-        totalFrameTime += *it;
-    return totalFrameTime/m_frameDurationHistory.size();
+    double total_frame_time = 0;
+    for (int frame_time : m_frameDurationHistory) total_frame_time += frame_time;
+    return total_frame_time/m_frameDurationHistory.size();
 }
 
 
 
-void Clock::AddObserver(IObserver * pObserver)
+void ClockManager::AddObserver(Observer * observer)
 {
-    if (pObserver != NULL)
-        m_observers.push_back(pObserver);
+    if (observer)
+        m_observers.push_back(observer);
 }
 
 
 
-void Clock::RemoveObserver(IObserver * pObserver)
+void ClockManager::RemoveObserver(Observer * observer)
 {
-    m_observers.erase(std::remove(m_observers.begin(),m_observers.end(), pObserver),
-                       m_observers.end());
-
+    m_observers.erase(std::remove(m_observers.begin(),m_observers.end(), observer), m_observers.end());
 }
 
 
 
-void Clock::SetFiltering(int frameWindow, double frameDefault)
+void ClockManager::SetFiltering(int frameWindow, double frameDefault)
 {
     //m_frameFilteringWindow = std::max(1, frameWindow);
     m_frameFilteringWindow = frameWindow > 1 ? frameWindow : 1;

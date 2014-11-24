@@ -33,10 +33,10 @@
 
 namespace psy{/////////////////////////////////////////////////////////////////
 
-class IObserver
+class Observer
 {
 public:
-    virtual ~IObserver() {}
+    virtual ~Observer() {}
     virtual void notify() = 0;
 };
 
