@@ -5,17 +5,20 @@
 #include <android_native_app_glue.h>
 #include <EGL/egl.h>
 
-namespace psy
-{
+namespace psy {
 
 
 class AndroidDisplay : public Display
 {
 public:
-    AndroidDisplay(struct android_app* android_app);
+    AndroidDisplay(struct android_app* app);
     virtual ~AndroidDisplay();
 
     virtual void init();
+    virtual void shutdown();
+
+    virtual void begin_frame();
+    virtual void end_frame();
 
 
 private:
@@ -29,4 +32,4 @@ private:
 };
 
 
-} /* namespace psy */
+} // end namespace psy

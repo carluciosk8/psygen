@@ -2,6 +2,8 @@
 
 #include "Engine/Geometry.hpp"
 
+#include <stdint.h>
+
 class Square : public psy::Geometry
 {
 public:
@@ -16,4 +18,7 @@ public:
 
     virtual void draw();
     virtual void estimate_bound();
+
+protected:
+    int32_t m_shader_object;
 };

@@ -9,37 +9,23 @@
 namespace psy {
 
 
-AndroidDisplay::AndroidDisplay(struct android_app* android_app)
+AndroidDisplay::AndroidDisplay(struct android_app* app)
 :
-    m_android_app(android_app),
-    m_display(NULL),
-    m_context(NULL),
-    m_surface(NULL),
+    m_android_app(app),
+    m_display(EGL_NO_DISPLAY),
+    m_context(EGL_NO_CONTEXT),
+    m_surface(EGL_NO_SURFACE),
     m_width(0),
     m_height(0)
-{}
+
+{
+    m_initialized = false;
+}
 
 
 
 AndroidDisplay::~AndroidDisplay()
-{
-    if (m_display != EGL_NO_DISPLAY)
-    {
-        eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (m_context != EGL_NO_CONTEXT)
-        {
-            eglDestroyContext(m_display, m_context);
-        }
-        if (m_surface != EGL_NO_SURFACE)
-        {
-            eglDestroySurface(m_display, m_surface);
-        }
-        eglTerminate(m_display);
-    }
-    m_display = EGL_NO_DISPLAY;
-    m_context = EGL_NO_CONTEXT;
-    m_surface = EGL_NO_SURFACE;
-}
+{}
 
 
 
@@ -92,11 +78,52 @@ void AndroidDisplay::init()
     eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
     eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
 
-
     glViewport(0, 0, m_width, m_height);
+
+    // Initialize GL state.
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+
     glClearColor(0.5f, 0.5f, 0.5f, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+
+    m_initialized = true;
+
+    sg_logger(Logger::INFO, "AndroidDisplay initialized");
 }
+
+
+
+void AndroidDisplay::shutdown()
+{
+    m_initialized = false;
+
+    if (m_display != EGL_NO_DISPLAY)
+    {
+        eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        if (m_context != EGL_NO_CONTEXT) eglDestroyContext(m_display, m_context);
+        if (m_surface != EGL_NO_SURFACE) eglDestroySurface(m_display, m_surface);
+        eglTerminate(m_display);
+    }
+
+    m_display = EGL_NO_DISPLAY;
+    m_context = EGL_NO_CONTEXT;
+    m_surface = EGL_NO_SURFACE;
+}
+
+
+
+void AndroidDisplay::begin_frame()
+{
+    if (m_initialized) glClear(GL_COLOR_BUFFER_BIT);
+}
+
+
+
+void AndroidDisplay::end_frame()
+{
+    if (m_initialized) eglSwapBuffers(m_display, m_surface);
+}
+
 
 
 } // end namespace psy

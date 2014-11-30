@@ -1,26 +1,14 @@
 #include <jni.h>
 
 #include "Engine/AndroidApplication.hpp"
-#include "Engine/AndroidDisplay.hpp"
-#include "Engine/Application.hpp"
-#include "Square.hpp"
 
 
 void android_main(struct android_app* android_application)
 {
-    psy::Platform* m_platform = new psy::AndroidPlatform(android_application);
-    psy::Display*  m_display  = new psy::AndroidDisplay(android_application);
-    psy::Geometry* m_geometry = new Square();
+    // Make sure glue isn't stripped.
+    app_dummy();
 
-    m_platform->init();
-    m_display->init();
+    psy::Application* app = new psy::AndroidApplication(android_application);
 
-    // main loop
-    while (m_platform->is_running())
-    {
-        m_geometry->draw();
-    }
-
-    m_platform->shutdown();
-
+    app->run();
 }

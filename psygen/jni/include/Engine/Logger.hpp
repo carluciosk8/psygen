@@ -1,20 +1,32 @@
 #pragma once
 
+#include "Engine/Singleton.hpp"
+
 #include <string>
 
 namespace psy {
 
 
-class Logger
+class Logger : public Singleton<Logger>
 {
 public:
-    enum Priority { LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG };
+    enum Priority
+    {
+        ERROR,
+        WARNING,
+        INFO,
+        DEBUG
+    };
 
     virtual ~Logger() {}
 
-    virtual void log(Priority priority, const std::string& message) = 0;
-    inline  void log(Priority priority, const char* message) { log(priority, std::string(message)); }
+    virtual void operator ()(Priority priority, const std::string& message) = 0;
+    virtual void         log(Priority priority, const std::string& message) = 0;
+
+    inline  void operator ()(Priority priority, const char* message) { log(priority, std::string(message)); }
+    inline  void         log(Priority priority, const char* message) { log(priority, std::string(message)); }
 };
 
+#define sg_logger Logger::GetSingleton()
 
 }

@@ -1,46 +1,80 @@
 #include "Engine/AndroidApplication.hpp"
 
-#include <android_native_app_glue.h>
+#include "Engine/AndroidDisplay.hpp"
+#include "Engine/AndroidLogger.hpp"
+
 
 namespace psy {
 
 
+struct android_app* AndroidApplication::m_app;
 
-AndroidPlatform::AndroidPlatform(struct android_app* android_application)
-:
-    m_android_app(android_application)
+
+AndroidApplication::AndroidApplication(struct android_app* app)
 {
-    app_dummy();
-    m_android_app->userData = this;
-    android_application->onAppCmd = engine_handle_cmd;
+    m_app = app;
+    m_app->userData = this;
+    m_app->onAppCmd = handle_cmd;
+
+    m_display = new AndroidDisplay(app);
+    m_logger  = new AndroidLogger("psygen");
 }
 
 
-AndroidPlatform::~AndroidPlatform()
-{}
+
+AndroidApplication::~AndroidApplication()
+{
+    delete m_display;
+    delete m_logger;
+}
 
 
-void AndroidPlatform::init()
-{}
+
+void AndroidApplication::init()
+{
+    sg_display.init();
+    square.inflate();
+}
 
 
-void AndroidPlatform::shutdown()
-{}
+
+void AndroidApplication::run()
+{
+    m_is_running = true;
+    while (m_is_running)
+    {
+        process_events();
+
+        sg_display.begin_frame();
+        square.draw();
+        sg_display.end_frame();
+    }
+}
 
 
-void AndroidPlatform::engine_handle_cmd(struct android_app* app, int32_t cmd)
+
+void AndroidApplication::shutdown()
+{
+    m_is_running = false;
+    sg_display.shutdown();
+}
+
+
+
+void AndroidApplication::handle_cmd(struct android_app* app, int32_t cmd)
 {
     switch (cmd)
     {
+    // The window is being shown, get it ready.
     case APP_CMD_INIT_WINDOW:
-        // The window is being shown, get it ready.
-        //m_is_running = true;
+        if (app->window) sg_application.init();
         break;
 
+    // The window is being hidden or closed, clean it up.
     case APP_CMD_TERM_WINDOW:
-        // The window is being hidden or closed, clean it up.
-        //m_is_running = false;
+        sg_application.shutdown();
         break;
     }
 }
+
 } // end namespace psy

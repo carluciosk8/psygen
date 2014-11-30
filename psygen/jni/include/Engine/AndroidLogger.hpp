@@ -12,15 +12,15 @@ class AndroidLogger : public Logger
 {
 public:
     AndroidLogger(const std::string& tag);
-    virtual ~AndroidLogger() {}
+    virtual ~AndroidLogger();
 
+    virtual void operator ()(Priority priority, const std::string& message);
     virtual void log(Priority priority, const std::string& message);
 
 
 private:
-    std::string m_tag;
-
     android_LogPriority m_priority_table[4];
+    std::string         m_tag;
 };
 
 
