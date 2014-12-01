@@ -11,6 +11,9 @@ struct android_app* AndroidApplication::m_app;
 
 
 AndroidApplication::AndroidApplication(struct android_app* app)
+:
+    m_poll(nullptr),
+    m_events(0)
 {
     m_app = app;
     m_app->userData = this;
