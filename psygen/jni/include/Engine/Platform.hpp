@@ -2,10 +2,10 @@
 
 namespace psy {
 
-class Platform
+class Subsystem
 {
 public:
-    virtual ~Platform() {}
+    virtual ~Subsystem() {}
 
     virtual void init() = 0;
     virtual void shutdown() = 0;
