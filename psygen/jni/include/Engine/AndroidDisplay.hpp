@@ -14,9 +14,11 @@ public:
     AndroidDisplay(struct android_app* app);
     virtual ~AndroidDisplay();
 
+    // from Subsystem
     virtual void init();
     virtual void shutdown();
 
+    // from Display
     virtual void begin_frame();
     virtual void end_frame();
 

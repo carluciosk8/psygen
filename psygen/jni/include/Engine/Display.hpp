@@ -1,17 +1,15 @@
 #pragma once
 
 #include "Engine/Singleton.hpp"
+#include "Engine/Subsystem.hpp"
 
 namespace psy {
 
 
-class Display : public Singleton<Display>
+class Display : public Singleton<Display> , public Subsystem
 {
 public:
     virtual ~Display() {}
-
-    virtual void init() = 0;
-    virtual void shutdown() = 0;
 
     virtual void begin_frame() = 0;
     virtual void end_frame() = 0;
