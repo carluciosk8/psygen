@@ -84,7 +84,7 @@ void AndroidDisplay::init()
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
-    glClearColor(0.5f, 0.5f, 0.5f, 1);
+    glClearColor(0.0f, 0.0f, 0.0f, 1);
 
     m_initialized = true;
 

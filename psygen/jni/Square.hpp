@@ -2,7 +2,8 @@
 
 #include "Engine/Geometry.hpp"
 
-#include <stdint.h>
+#include <vector>
+#include <GLES2/gl2.h>
 
 class Square : public psy::Geometry
 {
@@ -20,5 +21,6 @@ public:
     virtual void estimate_bound();
 
 protected:
-    int32_t m_shader_object;
+    GLuint  m_shader_object;
+    std::vector<GLfloat>  m_vertices;
 };

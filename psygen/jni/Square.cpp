@@ -1,7 +1,6 @@
 #include "Square.hpp"
 
 #include <EGL/egl.h>
-#include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
 #include "Engine/Logger.hpp"
@@ -49,7 +48,19 @@ GLuint LoadShader(const char *shaderSrc, GLenum type)
 }
 
 
-Square::Square()
+Square::Square():
+    Geometry("Square"),
+    m_shader_object(0),
+    m_vertices
+    ({
+        -0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+         0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,
+
+         0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f
+    })
 {}
 
 
@@ -84,11 +95,10 @@ void Square::inflate()
 
     GLuint vertexShader;
     GLuint fragmentShader;
-    GLuint programObject;
     GLint linked;
 
     // Load the vertex/fragment shaders
-    vertexShader = psy::LoadShader(vShaderStr, GL_VERTEX_SHADER);
+    vertexShader   = psy::LoadShader(vShaderStr, GL_VERTEX_SHADER);
     fragmentShader = psy::LoadShader(fShaderStr, GL_FRAGMENT_SHADER);
 
     // Create the program object
@@ -130,46 +140,19 @@ void Square::inflate()
 }
 
 
-void Square::shrink()
-{}
-
-
-int Square::estimate_memory()
-{
-    return 0;
-}
-
-
-int Square::estimate_time()
-{
-    return 0;
-}
-
-
-void Square::update(float dt)
-{}
-
-
 void Square::draw()
 {
     if ( !psy::sg_display.is_initialized() )
         return;
-    const float color[] = {1.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat vertices[] = {-0.5,  0.5, 0, color[0], color[1], color[2], color[3],
-                          -0.5, -0.5, 0, color[0], color[1], color[2], color[3],
-                           0.5,  0.5, 0, color[0], color[1], color[2], color[3],
-                           0.5,  0.5, 0, color[0], color[1], color[2], color[3],
-                          -0.5, -0.5, 0, color[0], color[1], color[2], color[3],
-                           0.5, -0.5, 0, color[0], color[1], color[2], color[3]};
 
-    // Use the program object
+
     glUseProgram(m_shader_object);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, vertices);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, &vertices[3]);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, &m_vertices[0]);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, &m_vertices[3]);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -178,7 +161,8 @@ void Square::draw()
 }
 
 
-
-void Square::estimate_bound()
-{
-}
+void Square::update(float dt)  {}
+void Square::shrink()          {}
+void Square::estimate_bound()  {}
+int  Square::estimate_memory() { return 0; }
+int  Square::estimate_time()   { return 0; }

@@ -3,7 +3,9 @@
 namespace psy {
 
 
+// static members
 timespec AndroidClock::m_start_time;
+
 
 
 AndroidClock::AndroidClock()

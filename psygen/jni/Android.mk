@@ -10,13 +10,12 @@ LOCAL_SRC_FILES        := \
 	psygen_main.cpp \
     Square.cpp \
     src/Engine/AndroidApplication.cpp \
+    src/Engine/AndroidClock.cpp \
     src/Engine/AndroidDisplay.cpp \
     src/Engine/AndroidLogger.cpp \
-    #src/Engine/AndroidTimeSource.cpp \
-    #src/Engine/Application.cpp \
-    #src/Engine/Clock.cpp \
-    #src/Engine/Node.cpp \
-    #src/Engine/Renderer.cpp \
+    src/Engine/Clock.cpp \
+    src/Engine/Node.cpp \
+    src/Engine/Renderer.cpp \
 						  
 LOCAL_LDLIBS           := -llog -landroid -lEGL -lGLESv2
 

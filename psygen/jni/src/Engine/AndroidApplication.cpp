@@ -58,7 +58,6 @@ void AndroidApplication::run()
 
 void AndroidApplication::shutdown()
 {
-    m_is_running = false;
     sg_display.shutdown();
 }
 
@@ -79,5 +78,6 @@ void AndroidApplication::handle_cmd(struct android_app* app, int32_t cmd)
         break;
     }
 }
+
 
 } // end namespace psy

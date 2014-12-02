@@ -12,6 +12,10 @@ public:
 
     virtual void draw() = 0;
     virtual void estimate_bound() = 0;
+
+
+protected:
+    inline Geometry(const std::string& name) : Object(name) {}
 };
 
 
