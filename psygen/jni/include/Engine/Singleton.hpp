@@ -1,23 +1,19 @@
+#pragma once
+
 /******************************************************************************
 *//**
-    *  \file
     *  \brief Automatic singleton utility class by Scott Bilas
-    *  \ingroup PSYpatterns
-    *
     *//***********************************************************************/
-#ifndef __PSYGEN_SINGLETON__
-#define __PSYGEN_SINGLETON__
 
 #include <cassert>
 
 namespace psy {////////////////////////////////////////////////////////////////
 
-
 template <typename TYPE>
 class Singleton
 {
 public:
-    Singleton()
+    inline Singleton()
     {
         assert ( !ms_Singleton );
         unsigned long offset = ( unsigned long ) ( TYPE* ) 1 - ( unsigned long ) ( Singleton<TYPE>* ) ( TYPE* ) 1;
@@ -30,13 +26,13 @@ public:
         ms_Singleton = 0;
     }
 
-    static TYPE& GetSingleton ()
+    static TYPE& get_singleton ()
     {
         assert ( ms_Singleton );
         return ( *ms_Singleton );
     }
 
-    static TYPE* GetSingletonPtr ()
+    static TYPE* get_singleton_ptr ()
     {
         return ( ms_Singleton );
     }
@@ -48,8 +44,4 @@ private:
 
 template <typename TYPE> TYPE*  Singleton<TYPE>::ms_Singleton = 0;
 
-
-
 }//////////////////////////////////////////////////////////////////////////////
-
-#endif //__PSYGEN_SINGLETON__

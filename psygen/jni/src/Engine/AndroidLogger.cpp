@@ -25,12 +25,6 @@ AndroidLogger::~AndroidLogger()
 
 
 
-void AndroidLogger::log(Priority priority, const std::string& message)
-{
-    __android_log_print(m_priority_table[priority], m_tag.c_str(), "%s", message.c_str());
-}
-
-
 void AndroidLogger::operator ()(Priority priority, const std::string& message)
 {
     __android_log_print(m_priority_table[priority], m_tag.c_str(), "%s", message.c_str());

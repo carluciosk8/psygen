@@ -4,8 +4,10 @@
 
 namespace psy {
 
-class Display;
-class Logger;
+
+//class Subsystem;
+//class Logger;
+
 
 class Application : public Singleton<Application>
 {
@@ -22,31 +24,14 @@ public:
 protected:
     bool m_is_running;
 
-    Display* m_display;
-    Logger*  m_logger;
+    //Logger*    m_logger;
+
+    //Subsystem*   m_display;
 };
 
-#define sg_application      Application::GetSingleton()
-#define sg_application_ptr  Application::GetSingletonPtr()
 
+#define sg_application      Application::get_singleton()
+#define sg_application_ptr  Application::get_singleton_ptr()
 
-/*
-class AndroidEventProcessor : public FrameCode
-{
-public:
-    AndroidEventProcessor(struct android_app* android_application);
-    virtual ~AndroidEventProcessor();
-
-    virtual void init();
-    virtual void execute();
-    virtual void shutdown();
-
-
-private:
-    struct android_app* m_android_app;
-
-    static int32_t handle_input(struct android_app* app, AInputEvent* event);
-};
-*/
 
 } // end namespace psy

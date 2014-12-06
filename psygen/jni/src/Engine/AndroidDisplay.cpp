@@ -4,6 +4,7 @@
 #include <GLES2/gl2ext.h>
 
 #include "Engine/Logger.hpp"
+#include "Engine/RenderCommand.hpp"
 
 
 namespace psy {
@@ -25,15 +26,20 @@ AndroidDisplay::AndroidDisplay(struct android_app* app)
 
 
 AndroidDisplay::~AndroidDisplay()
-{}
+{
+    for (RenderCommand* cmd : m_render_program)
+        delete cmd;
+
+    m_render_program.clear();
+}
 
 
 
 // initialize OpenGL ES and EGL
 void AndroidDisplay::init()
 {
-    // Here specify the attributes of the desired configuration.
-    // Below, we select an EGLConfig with at least 8 bits per color component compatible with on-screen windows
+    sg_logger(Logger::DEBUG, "AndroidDisplay::init()");
+
     const EGLint attribs[] =
     {
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -44,51 +50,49 @@ void AndroidDisplay::init()
         EGL_NONE
     };
 
-    EGLint contextAttribs[] =
+    EGLint context_attribs[] =
     {
         EGL_CONTEXT_CLIENT_VERSION, 2,
         EGL_NONE
     };
 
     EGLint format;
-    EGLint numConfigs;
+    EGLint num_configs;
     EGLConfig config;
 
     m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglInitialize(m_display, NULL, NULL);
-
-    // Here, the application chooses the configuration it desires.
-    // In this sample, we have a very simplified selection process, where we pick the first EGLConfig that matches our criteria
-    eglChooseConfig(m_display, attribs, &config, 1, &numConfigs);
-
-    // EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
-    // As soon as we picked a EGLConfig, we can safely reconfigure the ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID.
+    eglChooseConfig(m_display, attribs, &config, 1, &num_configs);
     eglGetConfigAttrib(m_display, config, EGL_NATIVE_VISUAL_ID, &format);
+
     ANativeWindow_setBuffersGeometry(m_android_app->window, 0, 0, format);
 
     m_surface = eglCreateWindowSurface(m_display, config, m_android_app->window, NULL);
-    m_context = eglCreateContext(m_display, config, NULL, contextAttribs);
+    m_context = eglCreateContext(m_display, config, NULL, context_attribs);
 
-    if (eglMakeCurrent(m_display, m_surface, m_surface, m_context) == EGL_FALSE)
+    if (not eglMakeCurrent(m_display, m_surface, m_surface, m_context))
     {
-        //LOGW("Unable to eglMakeCurrent");
-        //return -1;
+        sg_logger(Logger::WARNING, "Unable to eglMakeCurrent");
+        return;
     }
 
     eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
     eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
 
-    glViewport(0, 0, m_width, m_height);
-
-    // Initialize GL state.
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1);
-
     m_initialized = true;
+}
 
-    sg_logger(Logger::INFO, "AndroidDisplay initialized");
+
+
+void AndroidDisplay::update()
+{
+    if (m_initialized)
+    {
+        for (RenderCommand* cmd : m_render_program)
+            cmd->execute();
+
+        eglSwapBuffers(m_display, m_surface);
+    }
 }
 
 
@@ -97,11 +101,11 @@ void AndroidDisplay::shutdown()
 {
     m_initialized = false;
 
-    if (m_display != EGL_NO_DISPLAY)
+    if (m_display not_eq EGL_NO_DISPLAY)
     {
         eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (m_context != EGL_NO_CONTEXT) eglDestroyContext(m_display, m_context);
-        if (m_surface != EGL_NO_SURFACE) eglDestroySurface(m_display, m_surface);
+        if (m_context not_eq EGL_NO_CONTEXT) eglDestroyContext(m_display, m_context);
+        if (m_surface not_eq EGL_NO_SURFACE) eglDestroySurface(m_display, m_surface);
         eglTerminate(m_display);
     }
 
@@ -109,21 +113,6 @@ void AndroidDisplay::shutdown()
     m_context = EGL_NO_CONTEXT;
     m_surface = EGL_NO_SURFACE;
 }
-
-
-
-void AndroidDisplay::begin_frame()
-{
-    if (m_initialized) glClear(GL_COLOR_BUFFER_BIT);
-}
-
-
-
-void AndroidDisplay::end_frame()
-{
-    if (m_initialized) eglSwapBuffers(m_display, m_surface);
-}
-
 
 
 } // end namespace psy

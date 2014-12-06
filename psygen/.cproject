@@ -3,7 +3,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="com.android.toolchain.gcc.1199115232">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.android.toolchain.gcc.1199115232" moduleId="org.eclipse.cdt.core.settings" name="Default">
-				<externalSettings/>
+				<externalSettings>
+					<externalSetting/>
+				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -18,7 +20,7 @@
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactName="${ProjName}" buildProperties="" description="" id="com.android.toolchain.gcc.1199115232" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="com.android.toolchain.gcc.1199115232.2087828028" name="/" resourcePath="">
-						<toolChain id="com.android.toolchain.gcc.1828085055" name="Android GCC" superClass="com.android.toolchain.gcc">
+						<toolChain id="com.android.toolchain.gcc.1828085055" name="Android GCC" resourceTypeBasedDiscovery="true" superClass="com.android.toolchain.gcc">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.513421337" isAbstract="false" superClass="com.android.targetPlatform"/>
 							<builder id="com.android.builder.92256688" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
 								<outputEntries>
@@ -32,15 +34,25 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="jni"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="psygen;com.android.toolchain.gcc.1199115232.1957630544" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="NONE" kind="macro" name="__cplusplus" value="201103L"/>
+					</externalSetting>
+				</externalSettings>
+			</storageModule>
 		</cconfiguration>
 		<cconfiguration id="com.android.toolchain.gcc.1199115232.1957630544">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.android.toolchain.gcc.1199115232.1957630544" moduleId="org.eclipse.cdt.core.settings" name="Debug">
-				<externalSettings/>
+				<externalSettings>
+					<externalSetting>
+						<entry flags="NONE" kind="macro" name="__cplusplus" value="201103L"/>
+					</externalSetting>
+				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -80,18 +92,23 @@
 		<project id="BreakDroid.null.532009366" name="BreakDroid"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.1199115232;com.android.toolchain.gcc.1199115232.2087828028;com.android.gcc.compiler.253382147;com.android.gcc.inputType.1253305995">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Default">
-			<resource resourceType="PROJECT" workspacePath="/BreakDroid"/>
-		</configuration>
+		<configuration configurationName="Default"/>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/BreakDroid"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.1199115232">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.1199115232.1957630544;com.android.toolchain.gcc.1199115232.1957630544.;com.android.gcc.compiler.621410166;com.android.gcc.inputType.1700657032">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.1199115232;com.android.toolchain.gcc.1199115232.2087828028;com.android.gcc.compiler.253382147;com.android.gcc.inputType.1253305995">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>

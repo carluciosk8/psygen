@@ -21,12 +21,11 @@ public:
     virtual ~Logger() {}
 
     virtual void operator ()(Priority priority, const std::string& message) = 0;
-    virtual void         log(Priority priority, const std::string& message) = 0;
 
-    inline  void operator ()(Priority priority, const char* message) { log(priority, std::string(message)); }
-    inline  void         log(Priority priority, const char* message) { log(priority, std::string(message)); }
+    inline  void operator ()(Priority priority, const char* message) { (*this)(priority, std::string(message)); }
 };
 
-#define sg_logger Logger::GetSingleton()
+#define sg_logger      Logger::get_singleton()
+#define sg_logger_ptr  Logger::get_singleton_ptr()
 
 }

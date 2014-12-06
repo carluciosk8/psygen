@@ -15,7 +15,6 @@ public:
     virtual ~AndroidLogger();
 
     virtual void operator ()(Priority priority, const std::string& message);
-    virtual void log(Priority priority, const std::string& message);
 
 
 private:

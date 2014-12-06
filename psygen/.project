@@ -3,6 +3,7 @@
 	<name>psygen</name>
 	<comment></comment>
 	<projects>
+		<project>psygen</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
