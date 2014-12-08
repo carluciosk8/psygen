@@ -8,18 +8,47 @@
 namespace psy {
 
 
-class AndroidLogger : public Logger
+class AndroidLoggerDebug : public LoggerDebug
 {
 public:
-    AndroidLogger(const std::string& tag);
-    virtual ~AndroidLogger();
-
-    virtual void operator ()(Priority priority, const std::string& message);
-
+    inline AndroidLoggerDebug(const std::string& tag) : m_tag(tag) {}
 
 private:
-    android_LogPriority m_priority_table[4];
-    std::string         m_tag;
+    std::string m_tag;
+    virtual void log();
+};
+
+
+class AndroidLoggerInfo : public LoggerInfo
+{
+public:
+    inline AndroidLoggerInfo(const std::string& tag) : m_tag(tag) {}
+
+private:
+    std::string m_tag;
+    virtual void log();
+};
+
+
+class AndroidLoggerWarning : public LoggerWarning
+{
+public:
+    inline AndroidLoggerWarning(const std::string& tag) : m_tag(tag) {}
+
+private:
+    std::string m_tag;
+    virtual void log();
+};
+
+
+class AndroidLoggerError : public LoggerError
+{
+public:
+    inline AndroidLoggerError(const std::string& tag) : m_tag(tag) {}
+
+private:
+    std::string m_tag;
+    virtual void log();
 };
 
 

@@ -1,6 +1,7 @@
 #include "Engine/AndroidApplication.hpp"
 
 #include "Engine/AndroidDisplay.hpp"
+#include "Engine/AndroidEventManager.hpp"
 #include "Engine/AndroidLogger.hpp"
 
 #include "Engine/RenderCommands/GlClear.hpp"
@@ -13,71 +14,42 @@ namespace psy {
 
 
 AndroidApplication::AndroidApplication(struct android_app* app)
-:
-    m_app(app)
 {
-    new AndroidLogger("psygen");
-    new AndroidDisplay(app);
+    new AndroidLoggerDebug("psygen");
+    new AndroidLoggerInfo("psygen");
+    new AndroidLoggerWarning("psygen");
+    new AndroidLoggerError("psygen");
 
-    m_app->userData = this;
-    m_app->onAppCmd = handle_cmd;
+    m_tasks.push_back( new AndroidEventManager(app) );
+    m_tasks.push_back( new AndroidDisplay(app) );
 }
 
 
 
 AndroidApplication::~AndroidApplication()
 {
-    delete sg_android_display_ptr;
-    delete sg_logger_ptr;
+    for (Task* task : m_tasks) delete task;
+
+    delete &log_debug_sgt;
+    delete &log_info_sgt;
+    delete &log_warning_sgt;
+    delete &log_error_sgt;
 }
 
 
 
 void AndroidApplication::init()
 {
-    sg_logger(Logger::DEBUG, "AndroidApplication::init()");
-
-    sg_android_display_ptr->init();
-}
-
-
-
-void AndroidApplication::run()
-{
-    sg_logger(Logger::DEBUG, "AndroidApplication::run()");
-
-    m_is_running = true;
-    while (m_is_running)
-    {
-        update();
-
-        sg_android_display_ptr->update();
-    }
+    Application::init();
+    log_debug_sgt << "AndroidApplication::init()" << std::endl;
 }
 
 
 
 void AndroidApplication::shutdown()
 {
-    sg_logger(Logger::DEBUG, "AndroidApplication::shutdown()");
-
-    sg_android_display.shutdown();
-}
-
-
-
-void AndroidApplication::handle_cmd(struct android_app* app, int32_t cmd)
-{
-    switch (cmd)
-    {
-    case APP_CMD_INIT_WINDOW:
-        if (app->window) sg_application.init();
-        break;
-
-    case APP_CMD_TERM_WINDOW:
-        sg_application.shutdown();
-        break;
-    }
+    Application::shutdown();
+    log_debug_sgt << "AndroidApplication::shutdown()" << std::endl;
 }
 
 

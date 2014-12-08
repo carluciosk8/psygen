@@ -15,30 +15,26 @@ AndroidDisplay::AndroidDisplay(struct android_app* app)
     m_android_app(app),
     m_display(EGL_NO_DISPLAY),
     m_context(EGL_NO_CONTEXT),
-    m_surface(EGL_NO_SURFACE),
-    m_width(0),
-    m_height(0)
-
+    m_surface(EGL_NO_SURFACE)
 {
     m_initialized = false;
+    m_width = 0;
+    m_height = 0;
+    m_active_program = nullptr;
 }
 
 
 
 AndroidDisplay::~AndroidDisplay()
 {
-    for (RenderCommand* cmd : m_render_program)
-        delete cmd;
-
-    m_render_program.clear();
 }
 
 
 
 // initialize OpenGL ES and EGL
-void AndroidDisplay::init()
+void AndroidDisplay::start()
 {
-    sg_logger(Logger::DEBUG, "AndroidDisplay::init()");
+    log_debug_sgt << "AndroidDisplay::start()" << std::endl;
 
     const EGLint attribs[] =
     {
@@ -72,7 +68,7 @@ void AndroidDisplay::init()
 
     if (not eglMakeCurrent(m_display, m_surface, m_surface, m_context))
     {
-        sg_logger(Logger::WARNING, "Unable to eglMakeCurrent");
+        log_warning_sgt << "Unable to eglMakeCurrent" << std::endl;
         return;
     }
 
@@ -86,19 +82,19 @@ void AndroidDisplay::init()
 
 void AndroidDisplay::update()
 {
+    assert(m_active_program);
     if (m_initialized)
     {
-        for (RenderCommand* cmd : m_render_program)
-            cmd->execute();
-
+        m_active_program->execute();
         eglSwapBuffers(m_display, m_surface);
     }
 }
 
 
 
-void AndroidDisplay::shutdown()
+void AndroidDisplay::stop()
 {
+    log_debug_sgt << "AndroidDisplay::stop()" << std::endl;
     m_initialized = false;
 
     if (m_display not_eq EGL_NO_DISPLAY)

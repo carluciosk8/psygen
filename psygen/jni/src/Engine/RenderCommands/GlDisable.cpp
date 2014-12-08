@@ -18,6 +18,8 @@ GlDisable::~GlDisable()
 
 void GlDisable::execute()
 {
+    log_debug_sgt << "GlDisable::execute()" << std::endl;
+
     for (GLenum state : m_states)
         glDisable(state);
 }

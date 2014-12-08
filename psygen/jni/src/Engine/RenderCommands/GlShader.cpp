@@ -10,7 +10,7 @@ GlShader::GlShader(const char* vsource, const char* fsource)
     m_shader = glCreateProgram();
     if (m_shader == 0)
     {
-        sg_logger(Logger::WARNING, "Could not create shader program");
+        log_warning_sgt << "Could not create shader program" << std::endl;
         return;
     }
 
@@ -31,7 +31,8 @@ GlShader::GlShader(const char* vsource, const char* fsource)
         {
             char log[length];
             glGetProgramInfoLog(m_shader, length, NULL, log);
-            sg_logger(Logger::WARNING, std::string("Error linking shader program:\n") + log);
+            log_warning_sgt << "Error linking shader program:" << std::endl;
+            log_warning_sgt << std::string(log) << std::endl;
         }
 
         glDeleteProgram(m_shader);
@@ -45,6 +46,8 @@ GlShader::~GlShader()
 
 void GlShader::execute()
 {
+    log_debug_sgt << "GlShader::execute( " << m_shader << " )" << std::endl;
+
     glUseProgram(m_shader);
 }
 
@@ -69,7 +72,8 @@ GLuint GlShader::load_shader(const char* source, GLenum type)
             {
                 char log[length];
                 glGetShaderInfoLog(shader, length, NULL, log);
-                sg_logger(Logger::DEBUG, std::string("Error compiling shader:\n") + log);
+                log_warning_sgt << "Error compiling shader:" << std::endl;
+                log_warning_sgt << std::string(log) << std::endl;
             }
             glDeleteShader(shader);
             shader = 0;

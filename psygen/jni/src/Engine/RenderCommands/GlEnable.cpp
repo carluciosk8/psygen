@@ -18,6 +18,8 @@ GlEnable::~GlEnable()
 
 void GlEnable::execute()
 {
+    log_debug_sgt << "GlEnable::execute()" << std::endl;
+
     for (GLenum state : m_states)
         glEnable(state);
 }

@@ -1,31 +1,42 @@
 #pragma once
 
+#include <string>
+#include <sstream>
+
 #include "Engine/Singleton.hpp"
 
-#include <string>
 
 namespace psy {
 
 
-class Logger : public Singleton<Logger>
+class Logger
 {
 public:
-    enum Priority
-    {
-        ERROR,
-        WARNING,
-        INFO,
-        DEBUG
-    };
-
     virtual ~Logger() {}
 
-    virtual void operator ()(Priority priority, const std::string& message) = 0;
+    template <class T> Logger& operator << ( const T& Value );
+    inline             Logger& operator << ( std::ostream&(*f)(std::ostream&) );
 
-    inline  void operator ()(Priority priority, const char* message) { (*this)(priority, std::string(message)); }
+protected:
+    std::stringstream line;
+
+private:
+    virtual void log() = 0;
 };
 
-#define sg_logger      Logger::get_singleton()
-#define sg_logger_ptr  Logger::get_singleton_ptr()
+
+class LoggerDebug   : public Logger, public Singleton<LoggerDebug> {};
+class LoggerInfo    : public Logger, public Singleton<LoggerInfo> {};
+class LoggerWarning : public Logger, public Singleton<LoggerWarning> {};
+class LoggerError   : public Logger, public Singleton<LoggerError> {};
+
+#define log_debug_sgt     LoggerDebug::get_singleton()
+#define log_info_sgt      LoggerInfo::get_singleton()
+#define log_warning_sgt   LoggerWarning::get_singleton()
+#define log_error_sgt     LoggerError::get_singleton()
+
 
 }
+
+
+#include "Logger.inl"

@@ -16,6 +16,7 @@ LOCAL_SRC_FILES := \
     src/Engine/RenderCommands/GlViewport.cpp \
     src/Engine/AndroidApplication.cpp \
     src/Engine/AndroidDisplay.cpp \
+    src/Engine/AndroidEventManager.cpp \
     src/Engine/AndroidLogger.cpp \
     psygen_main.cpp \
 

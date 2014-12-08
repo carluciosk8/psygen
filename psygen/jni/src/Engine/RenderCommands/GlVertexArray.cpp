@@ -28,6 +28,10 @@ GlVertexArray::~GlVertexArray()
 
 void GlVertexArray::execute()
 {
+    log_debug_sgt << "GlVertexArray::execute( ";
+    for (float f : m_format) log_debug_sgt << f << " , ";
+    log_debug_sgt << " )" << std::endl;
+
     for (int i = 0 , p = 0 ; i < m_format.size() ; p += m_format[i] , ++i)
     {
         glEnableVertexAttribArray(i);

@@ -19,6 +19,8 @@ GlViewport::~GlViewport()
 
 void GlViewport::execute()
 {
+    log_debug_sgt << "GlViewport::execute( " << m_width << " , " << m_height << " )" << std::endl;
+
     glViewport(0, 0, m_width, m_height);
 }
 
