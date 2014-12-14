@@ -1,31 +1,18 @@
-#include "Engine/AndroidClock.hpp"
+#include <time.h>
 
 namespace psy {
 
+timespec __android_start_timespec;
+int __android__start_err = clock_gettime(CLOCK_MONOTONIC, &__android_start_timespec);
 
-// static members
-timespec AndroidClock::m_start_time;
-
-
-
-AndroidClock::AndroidClock()
-{
-    int err = clock_gettime(CLOCK_MONOTONIC, &m_start_time);
-    time_fptr = android_get_time;
-}
-
-
-AndroidClock::~AndroidClock()
-{}
-
-
-double AndroidClock::android_get_time()
+double __android_clock()
 {
     timespec now;
     int err = clock_gettime(CLOCK_MONOTONIC, &now);
 
-    return (now.tv_nsec-m_start_time.tv_nsec)*0.000000001 + (now.tv_sec-m_start_time.tv_sec);
+    return (now.tv_nsec-__android_start_timespec.tv_nsec)*0.000000001 + (now.tv_sec-__android_start_timespec.tv_sec);
 }
 
+double (*clock)() = __android_clock;
 
 }

@@ -17,7 +17,11 @@ public:
     // from Application
     virtual void init();
     virtual void shutdown();
+    virtual void run();
 };
 
 
 } // end namespace psy
+
+
+#define android_application_sgt reinterpret_cast<psy::AndroidApplication&>(Application::get_singleton())

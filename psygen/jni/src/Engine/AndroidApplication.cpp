@@ -2,11 +2,6 @@
 
 #include "Engine/AndroidDisplay.hpp"
 #include "Engine/AndroidEventManager.hpp"
-#include "Engine/AndroidLogger.hpp"
-
-#include "Engine/RenderCommands/GlClear.hpp"
-#include "Engine/RenderCommands/GlShader.hpp"
-#include "Engine/RenderCommands/GlVertexArray.hpp"
 
 
 namespace psy {
@@ -15,10 +10,11 @@ namespace psy {
 
 AndroidApplication::AndroidApplication(struct android_app* app)
 {
-    new AndroidLoggerDebug("psygen");
-    new AndroidLoggerInfo("psygen");
-    new AndroidLoggerWarning("psygen");
-    new AndroidLoggerError("psygen");
+    PSY_LOG_DBG("    Creating new AndroidApplication");
+
+    // Create android subsystems
+    //new AndroidEventManager(app);
+    //new AndroidDisplay(app);
 
     m_tasks.push_back( new AndroidEventManager(app) );
     m_tasks.push_back( new AndroidDisplay(app) );
@@ -28,28 +24,50 @@ AndroidApplication::AndroidApplication(struct android_app* app)
 
 AndroidApplication::~AndroidApplication()
 {
-    for (Task* task : m_tasks) delete task;
+    PSY_LOG_DBG("    Deleting AndroidApplication");
 
-    delete &log_debug_sgt;
-    delete &log_info_sgt;
-    delete &log_warning_sgt;
-    delete &log_error_sgt;
+    // Delete android subsystems.
+    for (Task* task : m_tasks)
+        delete task;
 }
 
 
 
 void AndroidApplication::init()
-{
-    Application::init();
-    log_debug_sgt << "AndroidApplication::init()" << std::endl;
+{    Application::init();
+    PSY_LOG_DBG("    Start AndroidApplication::init()");
+
+    // nop
+
+    PSY_LOG_DBG("    Finish AndroidApplication::init()");
 }
 
 
 
 void AndroidApplication::shutdown()
+{    Application::shutdown();
+    PSY_LOG_DBG("    Start AndroidApplication::shutdown()");
+
+    // nop
+
+    PSY_LOG_DBG("    Finish AndroidApplication::shutdown()");
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+void AndroidApplication::run()
 {
-    Application::shutdown();
-    log_debug_sgt << "AndroidApplication::shutdown()" << std::endl;
+    PSY_LOG_DBG("    Start AndroidApplication::run()");
+
+    // Wait display to be ready
+    while (not m_is_running)
+        event_manager_sgt.update();
+
+    Application::run();
+
+    shutdown();
+
+    PSY_LOG_DBG("    Finish AndroidApplication::run()");
 }
 
 

@@ -1,55 +1,10 @@
 #pragma once
 
-#include "Engine/Logger.hpp"
-
-#include <string>
 #include <android/log.h>
 
-namespace psy {
+namespace psy { const char* logtag(const char*, int); }
 
-
-class AndroidLoggerDebug : public LoggerDebug
-{
-public:
-    inline AndroidLoggerDebug(const std::string& tag) : m_tag(tag) {}
-
-private:
-    std::string m_tag;
-    virtual void log();
-};
-
-
-class AndroidLoggerInfo : public LoggerInfo
-{
-public:
-    inline AndroidLoggerInfo(const std::string& tag) : m_tag(tag) {}
-
-private:
-    std::string m_tag;
-    virtual void log();
-};
-
-
-class AndroidLoggerWarning : public LoggerWarning
-{
-public:
-    inline AndroidLoggerWarning(const std::string& tag) : m_tag(tag) {}
-
-private:
-    std::string m_tag;
-    virtual void log();
-};
-
-
-class AndroidLoggerError : public LoggerError
-{
-public:
-    inline AndroidLoggerError(const std::string& tag) : m_tag(tag) {}
-
-private:
-    std::string m_tag;
-    virtual void log();
-};
-
-
-}
+#define PSY_LOG_DBG(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, psy::logtag(__FILE__,__LINE__), __VA_ARGS__))
+#define PSY_LOG_INF(...) ((void)__android_log_print(ANDROID_LOG_INFO,  psy::logtag(__FILE__,__LINE__), __VA_ARGS__))
+#define PSY_LOG_WRN(...) ((void)__android_log_print(ANDROID_LOG_WARN,  psy::logtag(__FILE__,__LINE__), __VA_ARGS__))
+#define PSY_LOG_ERR(...) ((void)__android_log_print(ANDROID_LOG_ERROR, psy::logtag(__FILE__,__LINE__), __VA_ARGS__))

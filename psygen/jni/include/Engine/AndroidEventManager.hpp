@@ -13,9 +13,9 @@ public:
     virtual ~AndroidEventManager();
 
     // from Task
-    virtual void start() {}
+    virtual void start();
     virtual void update();
-    virtual void stop() {}
+    virtual void stop();
 
 private:
     struct android_app* m_app;
@@ -26,3 +26,6 @@ private:
 };
 
 } // end namespace psy
+
+
+#define android_event_manager_sgt reinterpret_cast<psy::EventManager&>(Application::get_singleton())

@@ -12,16 +12,17 @@ LOCAL_SRC_FILES := \
     src/Engine/RenderCommands/GlEnable.cpp \
     src/Engine/RenderCommands/GlDisable.cpp \
     src/Engine/RenderCommands/GlShader.cpp \
+    src/Engine/RenderCommands/GlTexture2D.cpp \
     src/Engine/RenderCommands/GlVertexArray.cpp \
     src/Engine/RenderCommands/GlViewport.cpp \
+    src/Engine/Application.cpp \
     src/Engine/AndroidApplication.cpp \
+    src/Engine/AndroidClock.cpp \
     src/Engine/AndroidDisplay.cpp \
     src/Engine/AndroidEventManager.cpp \
     src/Engine/AndroidLogger.cpp \
     psygen_main.cpp \
 
-#    src/Engine/AndroidClock.cpp \
-#    src/Engine/AndroidEventManager.cpp \
 
 LOCAL_CPPFLAGS := -std=c++11
 						  

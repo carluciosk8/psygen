@@ -1,36 +1,17 @@
 #include "Engine/AndroidLogger.hpp"
 
+#include <sstream>
 
 namespace psy {
 
+static std::stringstream tag;
 
-
-void AndroidLoggerDebug::log()
+const char* logtag(const char* file, int line)
 {
-    __android_log_print(ANDROID_LOG_DEBUG, m_tag.c_str(), "%s", line.str().c_str() );
+    tag.str( std::string() );
+    tag.clear();
+    tag << file << ":" << line;
+    return tag.str().c_str();
 }
-
-
-
-void AndroidLoggerInfo::log()
-{
-    __android_log_print(ANDROID_LOG_INFO, m_tag.c_str(), "%s", line.str().c_str() );
-}
-
-
-
-void AndroidLoggerWarning::log()
-{
-    __android_log_print(ANDROID_LOG_WARN, m_tag.c_str(), "%s", line.str().c_str() );
-}
-
-
-
-void AndroidLoggerError::log()
-{
-    __android_log_print(ANDROID_LOG_ERROR, m_tag.c_str(), "%s", line.str().c_str() );
-}
-
-
 
 }

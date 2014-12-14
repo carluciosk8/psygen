@@ -1,31 +1,33 @@
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+//
+//_____________________________________________________________________________________________________________________________________________________________
+
 #pragma once
 
 #include "Engine/Singleton.hpp"
 
 #include <list>
 
-#include "Engine/Task.hpp"
+namespace psy { // --------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace psy {
+
+class Task;
+
 
 class Application : public Singleton<Application>
 {
 public:
-    inline   Application() : m_is_running(false) {}
-    virtual ~Application() {}
+    Application();
+    virtual ~Application();
 
-    virtual void init()     { for (Task* task : m_tasks) task->start(); }
-    virtual void shutdown() { for (Task* task : m_tasks) task->stop(); }
+    virtual void init();
+    virtual void shutdown();
+    virtual void run();
 
     inline bool is_running() const { return m_is_running; }
-
-    void run()
-    {
-        m_is_running = true;
-        while (m_is_running)
-            for (Task* task : m_tasks)
-                task->update();
-    }
+    inline void stop() { m_is_running = false; }
+    inline void add_task(Task* task) { m_tasks.push_back(task); }
 
 
 protected:
@@ -34,7 +36,6 @@ protected:
 };
 
 
-#define application_sgt      Application::get_singleton()
+} // end namespace psy ----------------------------------------------------------------------------------------------------------------------------------------
 
-
-} // end namespace psy
+#define application_sgt   Application::get_singleton()

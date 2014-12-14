@@ -4,6 +4,7 @@
 
 #include "Engine/Logger.hpp"
 
+
 namespace psy {
 
 
@@ -20,10 +21,21 @@ public:
 class RenderProgram : protected std::list<RenderCommand*>
 {
 public:
-               ~RenderProgram()                  { for (RenderCommand* cmd : *this) delete cmd; }
+               ~RenderProgram()                  { for (RenderCommand* cmd : *this) delete cmd; clear(); }
 
     inline void add_command(RenderCommand* cmd)  { this->push_back(cmd); }
     inline void execute()                        { for (RenderCommand* cmd : *this) cmd->execute(); }
+    inline void erase()                          { for (RenderCommand* cmd : *this) delete cmd; clear(); }
+};
+
+
+
+class RenderResource
+{
+public:
+    virtual ~RenderResource() {}
+
+    virtual RenderCommand* compile();
 };
 
 

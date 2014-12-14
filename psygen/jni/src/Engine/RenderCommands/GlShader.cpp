@@ -1,16 +1,24 @@
 #include "Engine/RenderCommands/GlShader.hpp"
 
+#include <glm/glm.hpp>
+#include <vector>
+
 #include "Engine/Logger.hpp"
+#include "Engine/Clock.hpp"
+
+#include "Engine/RenderCommands/GlUniform.hpp"
 
 namespace psy {
 
 
 GlShader::GlShader(const char* vsource, const char* fsource)
 {
+    PSY_LOG_DBG("Creating new RenderCommand GlShader");
+
     m_shader = glCreateProgram();
     if (m_shader == 0)
     {
-        log_warning_sgt << "Could not create shader program" << std::endl;
+        PSY_LOG_WRN("Could not create shader program");
         return;
     }
 
@@ -30,9 +38,8 @@ GlShader::GlShader(const char* vsource, const char* fsource)
         if (length > 1)
         {
             char log[length];
-            glGetProgramInfoLog(m_shader, length, NULL, log);
-            log_warning_sgt << "Error linking shader program:" << std::endl;
-            log_warning_sgt << std::string(log) << std::endl;
+            glGetProgramInfoLog(m_shader, length, nullptr, log);
+            PSY_LOG_WRN("Error linking shader program:\n%s", log);
         }
 
         glDeleteProgram(m_shader);
@@ -41,13 +48,13 @@ GlShader::GlShader(const char* vsource, const char* fsource)
 
 
 GlShader::~GlShader()
-{}
+{
+    PSY_LOG_DBG("Deleting RenderCommand GlShader");
+}
 
 
 void GlShader::execute()
 {
-    log_debug_sgt << "GlShader::execute( " << m_shader << " )" << std::endl;
-
     glUseProgram(m_shader);
 }
 
@@ -60,7 +67,7 @@ GLuint GlShader::load_shader(const char* source, GLenum type)
     shader = glCreateShader(type);
     if (shader != 0)
     {
-        glShaderSource(shader, 1, &source, NULL);
+        glShaderSource(shader, 1, &source, nullptr);
         glCompileShader(shader);
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
         if (!compiled)
@@ -71,9 +78,9 @@ GLuint GlShader::load_shader(const char* source, GLenum type)
             if (length > 1)
             {
                 char log[length];
-                glGetShaderInfoLog(shader, length, NULL, log);
-                log_warning_sgt << "Error compiling shader:" << std::endl;
-                log_warning_sgt << std::string(log) << std::endl;
+                glGetShaderInfoLog(shader, length, nullptr, log);
+                PSY_LOG_WRN("Error compiling shader:\n%s", log);
+                //LOGW(log);
             }
             glDeleteShader(shader);
             shader = 0;

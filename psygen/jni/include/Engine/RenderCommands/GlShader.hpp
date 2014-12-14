@@ -16,6 +16,7 @@ public:
     // from RenderCommand
     virtual void execute();
 
+    inline GLuint get_handler() { return  m_shader; }
 
 protected:
     GLuint  m_shader;
