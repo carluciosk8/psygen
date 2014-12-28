@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/EventManager.hpp"
+#include "psygen/EventManager.hpp"
 
 #include <android_native_app_glue.h>
 

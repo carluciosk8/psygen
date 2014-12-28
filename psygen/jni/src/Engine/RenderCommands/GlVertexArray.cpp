@@ -52,29 +52,16 @@ void GlVertexArray::execute()
 
 
 
-GlVertexBufferObject::GlVertexBufferObject(GLenum primitive_type, const std::vector<float>& vertices, const std::vector<int>& format, const std::vector<unsigned short>& indices)
+GlVertexBufferObject::GlVertexBufferObject(GLenum primitive_type, const std::vector<GLfloat>& vertices, const std::vector<GLubyte>& format, const std::vector<GLushort>& indices)
 :
+    m_handler {0, 0},
     m_primitive_type(primitive_type),
     m_format(format),
-    //m_num_vertices(0),
+    m_vertices(vertices),
+    m_indices(indices),
     m_stride(0)
 {
     PSY_LOG_DBG("Creating new RenderCommand GlVertexBufferObject");
-
-    for (int attribute_size : m_format)
-        m_stride += attribute_size;
-    m_stride *= sizeof(GLfloat);
-
-    //m_num_vertices = vertices.size() / m_stride;
-    m_num_indices = indices.size();
-
-    glGenBuffers(2, m_handler);
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_handler[0]);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_handler[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_num_indices * sizeof(GLushort), &indices[0], GL_STATIC_DRAW);
 }
 
 
@@ -86,21 +73,25 @@ GlVertexBufferObject::~GlVertexBufferObject()
 
 
 
-void GlVertexBufferObject::execute()
+void GlVertexBufferObject::inflate()
 {
+
+    for (int attribute_size : m_format)
+        m_stride += attribute_size;
+    m_stride *= sizeof(GLfloat);
+
+    glGenBuffers(2, m_handler);
+
     glBindBuffer(GL_ARRAY_BUFFER, m_handler[0]);
+    glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(GLfloat), &m_vertices[0], GL_STATIC_DRAW);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_handler[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(GLushort), &m_indices[0], GL_STATIC_DRAW);
+}
 
-    for (int p = 0 , i = 0 ; i < m_format.size() ; p += m_format[i]*sizeof(GLfloat), ++i)
-    {
-        glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, m_format[i], GL_FLOAT, GL_FALSE, m_stride, (const void*)p);
-    }
 
-    glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_SHORT, 0);
-
-    for (int i = 0 ; i < m_format.size() ; ++i)
-        glDisableVertexAttribArray(i);
+void GlVertexBufferObject::shrink()
+{
 }
 
 

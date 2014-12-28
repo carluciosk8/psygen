@@ -2,9 +2,9 @@
 
 #include <GLES2/gl2ext.h>
 
-#include "Engine/Logger.hpp"
-#include "Engine/Application.hpp"
-#include "Engine/RenderCommand.hpp"
+#include "psygen/Logger.hpp"
+#include "psygen/Application.hpp"
+#include "psygen/RenderCommand.hpp"
 
 
 namespace psy {
@@ -21,7 +21,7 @@ AndroidDisplay::AndroidDisplay(struct android_app* app)
     m_initialized = false;
     m_width = 0;
     m_height = 0;
-    m_active_program = nullptr;
+    //m_active_program = nullptr;
     m_glasm_prg = nullptr;
     render = android_render;
 }
@@ -166,8 +166,15 @@ void AndroidDisplay::android_render(unsigned char* prg)
             case GLASM::UF1:
                 GLASM_NEXT(pc, GLint, value.uniform1fp.loc);
                 GLASM_NEXT(pc, GLfloat*, value.uniform1fp.pval);
-                //PSY_LOG_DBG("        glUniform1f(%d, %f)", value.uniform1fp.loc, *value.uniform1fp.pval);
+                PSY_LOG_DBG("        glUniform1f(%d, %f)", value.uniform1fp.loc, *value.uniform1fp.pval);
                 glUniform1f(value.uniform1fp.loc, *value.uniform1fp.pval);
+                break;
+
+            case GLASM::UF2:
+                GLASM_NEXT(pc, GLint, value.uniform1fp.loc);
+                GLASM_NEXT(pc, GLfloat*, value.uniform1fp.pval);
+                PSY_LOG_DBG("        glUniform2f(%d, %f, %f)", value.uniform1fp.loc, value.uniform1fp.pval[0], value.uniform1fp.pval[1]);
+                glUniform2fv(value.uniform1fp.loc, 1, value.uniform1fp.pval);
                 break;
 
             case GLASM::VBO:
@@ -206,7 +213,6 @@ void AndroidDisplay::android_render(unsigned char* prg)
                 GLASM_NEXT(pc, GLint4, value.int4);
                 //PSY_LOG_DBG("        glViewport(%d, %d, %d, %d)", value.int4.x, value.int4.y, value.int4.z, value.int4.w);
                 glViewport(value.int4.x, value.int4.y, value.int4.z, value.int4.w);
-                PSY_LOG_DBG("----------->   sizeof(geometry): %d", sizeof(value.geometry));
                 break;
 
 

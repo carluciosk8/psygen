@@ -1,13 +1,14 @@
 #pragma once
 
 #include <list>
+#include <memory>
 
-#include "Engine/Logger.hpp"
+#include "psygen/Logger.hpp"
 
 
 namespace psy {
 
-
+/*
 class RenderCommand
 {
 public:
@@ -27,15 +28,16 @@ public:
     inline void execute()                        { for (RenderCommand* cmd : *this) cmd->execute(); }
     inline void erase()                          { for (RenderCommand* cmd : *this) delete cmd; clear(); }
 };
+*/
 
 
-
-class RenderResource
+class RenderingResource
 {
 public:
-    virtual ~RenderResource() {}
+    virtual ~RenderingResource() {}
 
-    virtual RenderCommand* compile();
+    virtual void inflate() = 0;
+    virtual void shrink() = 0;
 };
 
 

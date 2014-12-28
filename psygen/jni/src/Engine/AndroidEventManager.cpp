@@ -3,8 +3,8 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Logger.hpp"
-#include "Engine/Application.hpp"
+#include "psygen/Logger.hpp"
+#include "psygen/Application.hpp"
 
 
 namespace psy {

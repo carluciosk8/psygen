@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "Engine/Singleton.hpp"
+#include "psygen/Singleton.hpp"
 
 #include <list>
 

@@ -1,19 +1,30 @@
 #include "Engine/RenderCommands/GlShader.hpp"
 
-#include <glm/glm.hpp>
-#include <vector>
+#include "psygen/Logger.hpp"
 
-#include "Engine/Logger.hpp"
-#include "Engine/Clock.hpp"
-
-#include "Engine/RenderCommands/GlUniform.hpp"
 
 namespace psy {
 
 
 GlShader::GlShader(const char* vsource, const char* fsource)
+:
+    m_vertex_shader_source(vsource),
+    m_fragment_shader_source(fsource),
+    m_shader(0)
 {
-    PSY_LOG_DBG("Creating new RenderCommand GlShader");
+    PSY_LOG_DBG("Creating new RenderingResource GlShader");
+}
+
+
+GlShader::~GlShader()
+{
+    PSY_LOG_DBG("Deleting RenderingResource GlShader");
+}
+
+
+void GlShader::inflate()
+{
+    PSY_LOG_DBG("Inflating RenderingResource GlShader");
 
     m_shader = glCreateProgram();
     if (m_shader == 0)
@@ -22,8 +33,8 @@ GlShader::GlShader(const char* vsource, const char* fsource)
         return;
     }
 
-    GLuint vshader_handle = load_shader(vsource, GL_VERTEX_SHADER);
-    GLuint fshader_handle = load_shader(fsource, GL_FRAGMENT_SHADER);
+    GLuint vshader_handle = load_shader(m_vertex_shader_source.c_str(), GL_VERTEX_SHADER);
+    GLuint fshader_handle = load_shader(m_fragment_shader_source.c_str(), GL_FRAGMENT_SHADER);
     glAttachShader(m_shader, vshader_handle);
     glAttachShader(m_shader, fshader_handle);
     glLinkProgram(m_shader);
@@ -47,15 +58,9 @@ GlShader::GlShader(const char* vsource, const char* fsource)
 }
 
 
-GlShader::~GlShader()
+void GlShader::shrink()
 {
-    PSY_LOG_DBG("Deleting RenderCommand GlShader");
-}
-
-
-void GlShader::execute()
-{
-    glUseProgram(m_shader);
+    glDeleteProgram(m_shader);
 }
 
 

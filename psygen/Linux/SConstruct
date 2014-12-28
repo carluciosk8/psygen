@@ -1,0 +1,24 @@
+import os
+
+PSYengine_sources = [ '../jni/src/Engine/Application.cpp' ]
+
+PSYengine_include = ' -I../jni/include '
+
+PSYengine_release_flags = ' -Wall -std=c++0x -O3 -pipe -funroll-loops -fomit-frame-pointer '
+PSYengine_debug_flags = ' -Wall -std=c++0x -g -DNDEBUG '
+
+PSYengine_ccflags = PSYengine_include + PSYengine_debug_flags + '`sdl-config --cflags`'
+PSYengine_libs = []
+PSYengine_libpath = []
+PSYengine_linkflags = ''
+PSYengine_filename = 'lib/PSYengine'
+PSYengine_cleanfiles = [ '.sconsign.dblite' ]
+
+PSYengine_env = Environment( ENV = os.environ,
+                             CCFLAGS = PSYengine_ccflags,
+                             LIBS = PSYengine_libs,
+                             LIBPATH = PSYengine_libpath,
+                             LINKFLAGS = PSYengine_linkflags,
+                             CPPPATH = ['../../include'] )
+PSYengine = PSYengine_env.SharedLibrary( PSYengine_filename, PSYengine_sources )
+Clean( PSYengine, PSYengine_cleanfiles )

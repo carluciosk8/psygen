@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Engine/Task.hpp"
-#include "Engine/Singleton.hpp"
+#include "psygen/Task.hpp"
+#include "psygen/Singleton.hpp"
 
 namespace psy {
 
