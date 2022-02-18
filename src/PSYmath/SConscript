@@ -1,0 +1,95 @@
+###############################################################################
+#
+#   PSYGEN - Procedural Synthesis Graphics Engine
+#   http://psygen.sourceforge.net
+#
+#   Copyright (c) 2007 by Carlucio Santos Cordeiro
+#   email:      carlucio@gmail.com
+#
+#   This file is part of PSYGEN
+#
+#   PSYGEN is free software: you can redistribute it and/or modify it under
+#   the terms of the GNU Lesser General Public License as published by the
+#   Free Software Foundation, either version 3 of the License, or (at your
+#   option) any later version.
+#
+#   PSYGEN is distributed in the hope that it will be useful, but WITHOUT ANY
+#   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU Lesser General Public License
+#   along with PSYGEN. If not, see <http://www.gnu.org/licenses/>
+#
+###############################################################################
+import os
+import sys
+
+
+print("Building PSYmath ...")
+print()
+
+
+## Get all source files
+PSYmath_sources = Glob('*.cpp')
+
+
+
+## Set PSYmath platform-dependent environment for Linux
+if sys.platform == 'linux':
+    PSYmath_include = ' -I./include '
+    PSYmath_release_flags = ' -Wall -O3 -pipe -funroll-loops -fomit-frame-pointer '
+    PSYmath_debug_flags = ' -g -Wall -DNDEBUG '
+
+    PSYmath_ccflags = PSYmath_include + PSYmath_debug_flags
+    PSYmath_libs = []
+    PSYmath_libpath = []
+    PSYmath_linkflags = ''
+    PSYmath_filename = '../../lib/PSYmath'
+    PSYmath_cleanfiles = [ '.sconsign.dblite' ]
+
+
+### Set platform-dependent source files and environment for Mac OS X
+#elif sys.platform == "darwin":
+    #SetPlatformSources(psygen_sources, psygen_sources_allplatforms, psygen_sources_osx)
+    #psygen_include = ' -I./include '
+    #release_flags = ' -Wall -O3 -pipe -funroll-loops -fomit-frame-pointer '
+    #debug_flags = ' -g -Wall '
+    #psygen_ccflags = debug_flags + psygen_include
+    #psygen_libs = ['GLEW', 'SDL_image']
+    #psygen_libpath = []
+    #psygen_linkflags = '-framework OpenGL `sdl-config --libs`'
+    #psygen_filename = './lib/psygen'
+    #psygen_cleanfiles = [ '.sconsign.dblite', 'fps.dat' ]
+
+
+### Set platform-dependent source files and environment for Windows
+#elif sys.platform == 'win32':
+    #SetPlatformSources(psygen_sources, psygen_sources_allplatforms, psygen_sources_win)
+    #psygen_include = ' /I./include  /I/WINDOWS/include '
+    #psygen_ccflags = ' /D_USRDLL /MD ' + psygen_include
+    #psygen_libs = [ 'OpenGL32', 'GLU32', 'glew32d', 'SDL', 'SDL_image', 'user32', 'Gdi32.lib' ]
+    #psygen_libpath = []
+    #psygen_linkflags = ''
+    #psygen_filename = 'psygen'
+    #psygen_cleanfiles = [ 'psygen.dll.manifest', '.sconsign.dblite', 'fps.dat' ]
+
+
+## Platform not supported
+else:
+    print('Platform ', sys.platform, ' not supported.')
+    Exit(0)
+
+
+# Build PSYmath
+print('Buildind for ', sys.platform, ' ...')
+PSYmath_env = Environment( ENV = os.environ,
+                           CCFLAGS = PSYmath_ccflags,
+                           LIBS = PSYmath_libs,
+                           LIBPATH = PSYmath_libpath,
+                           LINKFLAGS = PSYmath_linkflags,
+                           CPPPATH = ['../../include'] )
+
+PSYmath = PSYmath_env.SharedLibrary( PSYmath_filename, PSYmath_sources )
+Clean( PSYmath, PSYmath_cleanfiles )
+Return('PSYmath')

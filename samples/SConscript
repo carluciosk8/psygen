@@ -1,0 +1,93 @@
+###############################################################################
+#
+#   PSYGEN - Procedural Synthesis Graphics Engine
+#   http://psygen.sourceforge.net
+#
+#   Copyright (c) 2008 by Carlucio Santos Cordeiro
+#   email:      carlucio@gmail.com
+#
+#   This file is part of PSYGEN
+#
+#   PSYGEN is free software: you can redistribute it and/or modify it under
+#   the terms of the GNU Lesser General Public License as published by the
+#   Free Software Foundation, either version 3 of the License, or (at your
+#   option) any later version.
+#
+#   PSYGEN is distributed in the hope that it will be useful, but WITHOUT ANY
+#   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU Lesser General Public License
+#   along with PSYGEN. If not, see <http://www.gnu.org/licenses/>
+#
+###############################################################################
+import os
+import sys
+
+## Set platform-dependent compiler stuff for Linux
+if sys.platform == 'linux':
+    PSYsamples_include = ' -I./include '
+    PSYsamples_release_flags = ' -Wall -std=c++0x -O3 -pipe -funroll-loops -fomit-frame-pointer '
+    PSYsamples_debug_flags = ' -Wall -std=c++0x -g '
+    PSYsamples_ccflags = PSYsamples_include + PSYsamples_debug_flags + '`sdl-config --cflags`'
+    PSYsamples_libs = [ 'PSYengine', 'PSYmath' , 'GLU', 'GLEW', 'SDL', 'SDL_image', 'AntTweakBar']
+    PSYsamples_libpath = [ '../lib' ]
+    PSYsamples_linkflags = '`sdl-config --libs`'
+    PSYsamples_cleanfiles = [ '.sconsign.dblite' ]
+
+    PSYsample_Simple_Application_filename = 'Simple_Application.exe'
+
+
+### Set platform-dependent source files and environment for Mac OS X
+#elif sys.platform == "darwin":
+    #pdemos_include = ' -I./include '
+    #pdemos_ccflags = ' -g -Wall ' + pdemos_include
+    #pdemos_libs = [ 'psygen', 'GLEW', 'SDL_image' ]
+    #pdemos_libpath = [ './lib' ]
+    #pdemos_linkflags = '-framework OpenGL `sdl-config --libs`'
+    #pdemos_cleanfiles = [ 'fps.dat' ]
+
+    #asteroiddemo_filename = 'asteroid'
+    #terraindemo_filename = 'terrain'
+    #treedemo_filename = 'tree'
+    ##plademo_filename = 'plademo'
+
+
+### Set platform-dependent source files and environment for Windows
+#elif sys.platform == 'win32':
+    #pdemos_include = ' -I./include '
+    #pdemos_ccflags = ' /MD ' + pdemos_include
+    #pdemos_libs = [ 'psygen', 'SDL', 'SDLmain' ]
+    #pdemos_libpath = ['./' ]
+    #pdemos_linkflags = '/SUBSYSTEM:WINDOWS'
+    #pdemos_cleanfiles = [ '*.manifest', 'stdout.txt', 'stderr.txt', 'fps.dat' ]
+
+    #asteroiddemo_filename = 'asteroid'
+    #terraindemo_filename = 'terrain'
+    #treedemo_filename = 'tree'
+    ##plademo_filename = 'plademo'
+
+## Platform not supported
+else:
+    print('Platform ', sys.platform, ' not supported.')
+    Exit(0)
+
+
+## Get all test source files
+PSYsample_Simple_Application_sources = 'Simple_Application/Simple_Application.cpp'
+##PSYengine_test_sources ='PSYengine_test.cpp'
+
+# PSYGEN tests Env.
+PSYsamples_env = Environment( ENV = os.environ, CCFLAGS = PSYsamples_ccflags,
+                              LIBS = PSYsamples_libs,
+                              LIBPATH = PSYsamples_libpath,
+                              LINKFLAGS = PSYsamples_linkflags )
+
+Simple_Application = PSYsamples_env.Program( PSYsample_Simple_Application_filename, PSYsample_Simple_Application_sources )
+##PSYengine_test = PSYtests_env.Program( PSYengine_test_filename, PSYengine_test_sources )
+
+Clean( Simple_Application, PSYsamples_cleanfiles )
+##Clean( PSYengine_test, PSYtests_cleanfiles )
+
+Return([ 'Simple_Application' ])

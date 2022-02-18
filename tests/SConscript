@@ -1,0 +1,107 @@
+###############################################################################
+#
+#   PSYGEN - Procedural Synthesis Graphics Engine
+#   http://psygen.sourceforge.net
+#
+#   Copyright (c) 2008 by Carlucio Santos Cordeiro
+#   email:      carlucio@gmail.com
+#
+#   This file is part of PSYGEN
+#
+#   PSYGEN is free software: you can redistribute it and/or modify it under
+#   the terms of the GNU Lesser General Public License as published by the
+#   Free Software Foundation, either version 3 of the License, or (at your
+#   option) any later version.
+#
+#   PSYGEN is distributed in the hope that it will be useful, but WITHOUT ANY
+#   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU Lesser General Public License
+#   along with PSYGEN. If not, see <http://www.gnu.org/licenses/>
+#
+###############################################################################
+import os
+import sys
+
+## Set platform-dependent compiler stuff for Linux
+if sys.platform == 'linux':
+    PSYtests_include = ' -I./include '
+    PSYtests_release_flags = ' -Wall -std=c++0x -O3 -pipe -funroll-loops -fomit-frame-pointer '
+    PSYtests_debug_flags = ' -Wall -std=c++0x -g -DNDEBUG '
+    PSYtests_ccflags = PSYtests_include + PSYtests_debug_flags + '`sdl-config --cflags`'
+    PSYtests_libs = [ 'PSYengine', 'PSYmath' , 'GLU', 'GLEW', 'SDL', 'SDL_image', 'AntTweakBar' ]
+    PSYtests_libpath = [ '../lib' ]
+    PSYtests_linkflags = '`sdl-config --libs`'
+    PSYtests_cleanfiles = [ '.sconsign.dblite' ]
+
+    PSYmath_test_filename = 'PSYmath_test'
+    PSYengine_test_filename = 'PSYengine_test'
+    tests_tree_exe = 'tree'
+    tests_asteroid_exe = 'asteroid'
+    tests_terrain_exe = 'terrain'
+    tests_world_exe = 'world'
+
+
+### Set platform-dependent source files and environment for Mac OS X
+#elif sys.platform == "darwin":
+    #pdemos_include = ' -I./include '
+    #pdemos_ccflags = ' -g -Wall ' + pdemos_include
+    #pdemos_libs = [ 'psygen', 'GLEW', 'SDL_image' ]
+    #pdemos_libpath = [ './lib' ]
+    #pdemos_linkflags = '-framework OpenGL `sdl-config --libs`'
+    #pdemos_cleanfiles = [ 'fps.dat' ]
+
+    #asteroiddemo_filename = 'asteroid'
+    #terraindemo_filename = 'terrain'
+    #treedemo_filename = 'tree'
+    ##plademo_filename = 'plademo'
+
+
+### Set platform-dependent source files and environment for Windows
+#elif sys.platform == 'win32':
+    #pdemos_include = ' -I./include '
+    #pdemos_ccflags = ' /MD ' + pdemos_include
+    #pdemos_libs = [ 'psygen', 'SDL', 'SDLmain' ]
+    #pdemos_libpath = ['./' ]
+    #pdemos_linkflags = '/SUBSYSTEM:WINDOWS'
+    #pdemos_cleanfiles = [ '*.manifest', 'stdout.txt', 'stderr.txt', 'fps.dat' ]
+
+    #asteroiddemo_filename = 'asteroid'
+    #terraindemo_filename = 'terrain'
+    #treedemo_filename = 'tree'
+    ##plademo_filename = 'plademo'
+
+## Platform not supported
+else:
+    print('Platform ', sys.platform, ' not supported.')
+    Exit(0)
+
+
+## Get all test source files
+PSYmath_test_sources ='PSYmath_test.cpp'
+PSYengine_test_sources ='PSYengine_test.cpp'
+tests_tree_sources = 'Tree.cpp'
+tests_asteroid_sources = 'Asteroid.cpp'
+tests_terrain_sources = 'Terrain.cpp'
+tests_world_sources = 'World.cpp'
+
+# PSYGEN tests Env.
+PSYtests_env = Environment( ENV = os.environ, CCFLAGS = PSYtests_ccflags, LIBS = PSYtests_libs, LIBPATH = PSYtests_libpath, LINKFLAGS = PSYtests_linkflags )
+
+PSYmath_test = PSYtests_env.Program( PSYmath_test_filename, PSYmath_test_sources )
+PSYengine_test = PSYtests_env.Program( PSYengine_test_filename, PSYengine_test_sources )
+tests_tree = PSYtests_env.Program( tests_tree_exe, tests_tree_sources )
+tests_asteroid = PSYtests_env.Program( tests_asteroid_exe, tests_asteroid_sources )
+tests_terrain = PSYtests_env.Program( tests_terrain_exe, tests_terrain_sources )
+tests_world = PSYtests_env.Program( tests_world_exe, tests_world_sources )
+
+Clean( PSYmath_test, PSYtests_cleanfiles )
+Clean( PSYengine_test, PSYtests_cleanfiles )
+Clean( tests_tree, PSYtests_cleanfiles )
+Clean( tests_asteroid, PSYtests_cleanfiles )
+Clean( tests_terrain, PSYtests_cleanfiles )
+Clean( tests_world, PSYtests_cleanfiles )
+
+Return([ 'PSYmath_test', 'PSYengine_test', 'tests_tree', 'tests_asteroid', 'tests_terrain', 'tests_world' ])

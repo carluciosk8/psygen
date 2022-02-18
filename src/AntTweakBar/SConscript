@@ -1,0 +1,102 @@
+###############################################################################
+#
+#   PSYGEN - Procedural Synthesis Graphics Engine
+#   http://psygen.sourceforge.net
+#
+#   Copyright (c) 2007 by Carlucio Santos Cordeiro
+#   email:      carlucio@gmail.com
+#
+#   This file is part of PSYGEN
+#
+#   PSYGEN is free software: you can redistribute it and/or modify it under
+#   the terms of the GNU Lesser General Public License as published by the
+#   Free Software Foundation, either version 3 of the License, or (at your
+#   option) any later version.
+#
+#   PSYGEN is distributed in the hope that it will be useful, but WITHOUT ANY
+#   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU Lesser General Public License
+#   along with PSYGEN. If not, see <http://www.gnu.org/licenses/>
+#
+###############################################################################
+import os
+import sys
+
+
+## Get all source files
+AntTweakBar_sources = [
+'TwColors.cpp',
+'TwFonts.cpp',
+'TwOpenGL.cpp',
+'TwOpenGLCore.cpp',
+'TwBar.cpp',
+'TwMgr.cpp',
+'TwPrecomp.cpp',
+'LoadOGL.cpp',
+'LoadOGLCore.cpp',
+'TwEventSDL.c',
+'TwEventSDL12.c',
+'TwEventSDL13.c',
+]
+
+
+## Set AntTweakBar platform-dependent environment for Linux
+if sys.platform == 'linux':
+    AntTweakBar_include = '-I../../include -I/usr/local/include -I/usr/X11R6/include -I/usr/include '
+    AntTweakBar_release_flags = '  -O3 -Wall -fPIC -fno-strict-aliasing -D_UNIX -D__PLACEMENT_NEW_INLINE '
+    AntTweakBar_debug_flags = ' -Wall -fPIC -fno-strict-aliasing -D_UNIX -D__PLACEMENT_NEW_INLINE -DNDEBUG '
+
+    AntTweakBar_ccflags = AntTweakBar_include + AntTweakBar_debug_flags + '`sdl-config --cflags`'
+    AntTweakBar_libs = []
+    AntTweakBar_libpath = []
+    AntTweakBar_linkflags = ''
+    AntTweakBar_filename = '../../lib/AntTweakBar'
+    AntTweakBar_cleanfiles = [ '.sconsign.dblite' ]
+
+
+### Set platform-dependent source files and environment for Mac OS X
+#elif sys.platform == "darwin":
+    #SetPlatformSources(psygen_sources, psygen_sources_allplatforms, psygen_sources_osx)
+    #psygen_include = ' -I./include '
+    #release_flags = ' -Wall -O3 -pipe -funroll-loops -fomit-frame-pointer '
+    #debug_flags = ' -g -Wall '
+    #psygen_ccflags = debug_flags + psygen_include
+    #psygen_libs = ['GLEW', 'SDL_image']
+    #psygen_libpath = []
+    #psygen_linkflags = '-framework OpenGL `sdl-config --libs`'
+    #psygen_filename = './lib/psygen'
+    #psygen_cleanfiles = [ '.sconsign.dblite', 'fps.dat' ]
+
+
+### Set platform-dependent source files and environment for Windows
+#elif sys.platform == 'win32':
+    #SetPlatformSources(psygen_sources, psygen_sources_allplatforms, psygen_sources_win)
+    #psygen_include = ' /I./include  /I/WINDOWS/include '
+    #psygen_ccflags = ' /D_USRDLL /MD ' + psygen_include
+    #psygen_libs = [ 'OpenGL32', 'GLU32', 'glew32d', 'SDL', 'SDL_image', 'user32', 'Gdi32.lib' ]
+    #psygen_libpath = []
+    #psygen_linkflags = ''
+    #psygen_filename = 'psygen'
+    #psygen_cleanfiles = [ 'psygen.dll.manifest', '.sconsign.dblite', 'fps.dat' ]
+
+
+## Platform not supported
+else:
+    print('Platform ', sys.platform, ' not supported.')
+    Exit(0)
+
+
+# Build AntTweakBar
+print('Buildind for ', sys.platform, ' ...')
+AntTweakBar_env = Environment( ENV = os.environ,
+                           CCFLAGS = AntTweakBar_ccflags,
+                           LIBS = AntTweakBar_libs,
+                           LIBPATH = AntTweakBar_libpath,
+                           LINKFLAGS = AntTweakBar_linkflags,
+                           CPPPATH = ['../../include'] )
+AntTweakBar = AntTweakBar_env.SharedLibrary( AntTweakBar_filename, AntTweakBar_sources )
+Clean( AntTweakBar, AntTweakBar_cleanfiles )
+Return('AntTweakBar')
